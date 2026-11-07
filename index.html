@@ -77,7 +77,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
       padding: 6px 10px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -109,7 +109,7 @@
       flex-wrap: wrap;
     }
 
-    .level-btn, .type-btn, .mode-btn, .sound-btn {
+    .level-btn, .type-btn, .install-btn, .sound-btn {
       border: none;
       border-radius: 10px;
       padding: 5px 8px;
@@ -133,9 +133,9 @@
       color: #6D28D9;
     }
 
-    .mode-btn {
-      background: #E0FBF8;
-      color: #0F766E;
+    .install-btn {
+      background: #DBEAFE;
+      color: #1D4ED8;
     }
 
     .score-badge {
@@ -169,12 +169,12 @@
 
     /* 문제 표시 카드 */
     .question-card {
-      flex: 1.25;
+      flex: 1.3;
       min-height: 0;
       background: var(--card-bg);
       border-radius: 24px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
-      padding: clamp(8px, 2vmin, 18px);
+      padding: clamp(8px, 2vmin, 16px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -184,12 +184,15 @@
     }
 
     .feedback-banner {
-      font-size: clamp(0.88rem, 2.3vmin, 1.2rem);
+      font-size: clamp(0.84rem, 2.2vmin, 1.15rem);
       font-weight: 800;
       color: var(--secondary-dark);
-      min-height: 1.3em;
+      min-height: 1.4em;
       text-align: center;
       flex-shrink: 0;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: #F1F5F9;
     }
 
     /* 시각적 수세기 그림 영역 */
@@ -201,6 +204,7 @@
       align-items: center;
       justify-content: center;
       gap: clamp(6px, 1.6vmin, 14px);
+      position: relative;
     }
 
     .visual-operator {
@@ -210,7 +214,6 @@
       flex-shrink: 0;
     }
 
-    /* 단일 수 그룹 박스 (A+B=? 에서 각 항, 또는 양변 모드에서 하위 항) */
     .item-group {
       flex: 1;
       min-width: 0;
@@ -224,20 +227,24 @@
       align-items: center;
       justify-content: center;
       gap: clamp(4px, 1vmin, 8px);
-      overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .item-group.solved-highlight {
+      background: #F0FDF4;
+      border: 2px solid #22C55E;
     }
 
     .group-count-label {
       font-size: clamp(0.7rem, 1.7vmin, 0.85rem);
       font-weight: 800;
-      color: #64748B;
+      color: #475569;
       background: #E2E8F0;
-      padding: 1px 8px;
+      padding: 2px 9px;
       border-radius: 999px;
       line-height: 1.3;
     }
 
-    /* 10개 묶음들을 담는 컨테이너 */
     .bundles-wrap {
       display: flex;
       flex-wrap: wrap;
@@ -247,7 +254,7 @@
       width: 100%;
     }
 
-    /* 10개 묶음 상자: 내부에서 정확히 5개씩 2줄(5x2)로 줄 바꿈 */
+    /* 10개 묶음 상자: 내부에서 5개씩 2줄(5x2) */
     .ten-bundle {
       background: #FFFBEB;
       border: 2px solid #F59E0B;
@@ -273,12 +280,12 @@
     .ten-bundle-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: clamp(1px, 0.4vmin, 3px);
+      gap: clamp(2px, 0.5vmin, 4px);
       justify-items: center;
       align-items: center;
     }
 
-    /* 낱개(1~9개) 그리드: 무조건 5개 단위로 줄 바꿈 */
+    /* 낱개(1~9개) 그리드: 무조건 5개 단위 줄 바꿈 */
     .ones-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -291,23 +298,54 @@
       padding: clamp(4px, 1vmin, 8px);
     }
 
-    /* 기본 이모지 크기 (1~9개 단일 수일 때) */
+    .emoji-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 1px;
+      will-change: transform;
+    }
+
     .ones-grid .emoji-item {
       font-size: clamp(1.05rem, 3.2vmin, 1.85rem);
       line-height: 1.05;
-      animation: popIn 0.22s ease-out;
     }
 
-    /* 10개 묶음 안의 이모지 크기 (약간 작게 하여 10개가 한눈에 들어오도록) */
     .ten-bundle-grid .emoji-item {
       font-size: clamp(0.76rem, 2.1vmin, 1.25rem);
       line-height: 1.05;
-      animation: popIn 0.22s ease-out;
     }
 
-    /* 10 이상인 그룹에서는 낱개 크기도 10묶음과 조화롭게 축소 */
     .item-group.has-tens .ones-grid .emoji-item {
       font-size: clamp(0.76rem, 2.1vmin, 1.25rem);
+    }
+
+    /* 이동해 온 두 번째 묶음(더해진 수)을 구분해 주는 테두리 강조 */
+    .emoji-item.from-second {
+      background: rgba(46, 196, 182, 0.18);
+      outline: 2px solid #2EC4B6;
+    }
+
+    /* 양변 모드에서 새로 채워진 정답 그림 강조 */
+    .emoji-item.from-answer {
+      background: rgba(255, 159, 28, 0.22);
+      outline: 2px solid #FF9F1C;
+    }
+
+    /* 빈칸을 채워야 할 목표 슬롯 표시 */
+    .target-slot-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(18px, 3vmin, 26px);
+      height: clamp(18px, 3vmin, 26px);
+      border-radius: 7px;
+      background: #FFF3B0;
+      border: 2px dashed #FF9F1C;
+      color: #D97706;
+      font-size: clamp(0.65rem, 1.6vmin, 0.85rem);
+      font-weight: 900;
     }
 
     .empty-slot-dot {
@@ -332,10 +370,16 @@
       align-items: center;
       gap: 4px;
       overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .balance-side.solved-highlight {
+      background: #F0FDF4;
+      border: 2px solid #22C55E;
     }
 
     .balance-side-title {
-      font-size: clamp(0.72rem, 1.8vmin, 0.9rem);
+      font-size: clamp(0.7rem, 1.7vmin, 0.88rem);
       font-weight: 800;
       color: var(--text-sub);
       background: #E2E8F0;
@@ -371,7 +415,6 @@
       line-height: 1;
     }
 
-    /* 양변 모드에서는 좌우에 각각 두 수가 들어가므로 크기를 한 단계 컴팩트하게 조정 */
     .visual-box.balance-mode .ones-grid {
       padding: clamp(2px, 0.6vmin, 5px) clamp(4px, 0.9vmin, 7px);
       gap: clamp(1px, 0.4vmin, 3px);
@@ -399,7 +442,7 @@
       background: #FFF3B0;
       border: 2px dashed var(--primary);
       color: var(--primary-dark);
-      font-size: clamp(1rem, 2.8vmin, 1.5rem);
+      font-size: clamp(0.95rem, 2.5vmin, 1.35rem);
       font-weight: 900;
     }
 
@@ -410,14 +453,14 @@
       justify-content: center;
       flex-wrap: nowrap;
       gap: clamp(6px, 1.8vmin, 14px);
-      font-size: clamp(1.9rem, 6.8vmin, 3.6rem);
+      font-size: clamp(1.85rem, 6.5vmin, 3.4rem);
       font-weight: 900;
       padding-top: 2px;
       flex-shrink: 0;
     }
 
     .equation-box.balance-eq {
-      font-size: clamp(1.45rem, 5.2vmin, 2.8rem);
+      font-size: clamp(1.4rem, 5vmin, 2.6rem);
       gap: clamp(4px, 1.4vmin, 10px);
     }
 
@@ -429,63 +472,28 @@
       border: 3px solid var(--primary);
       color: var(--primary-dark);
       text-align: center;
+      transition: transform 0.25s, background 0.25s;
     }
 
-    /* 답안 입력 패널 */
+    .answer-slot.solved {
+      background: #DCFCE7;
+      border-color: #22C55E;
+      color: #15803D;
+      transform: scale(1.06);
+    }
+
+    /* 답안 입력 패널 (키패드 고정 & 정답 후 다음 문제 카드 전환) */
     .answer-panel {
-      flex: 0.95;
+      flex: 0.92;
       min-height: 0;
       display: flex;
       flex-direction: column;
     }
 
-    .choices-grid {
-      flex: 1;
-      min-height: 0;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: clamp(8px, 1.8vmin, 14px);
-    }
-
-    .choice-btn {
-      border: none;
-      border-radius: 22px;
-      background: var(--secondary);
-      color: #FFFFFF;
-      font-size: clamp(1.8rem, 6.5vmin, 3.2rem);
-      font-weight: 900;
-      box-shadow: 0 5px 0 var(--secondary-dark);
-      cursor: pointer;
-      transition: transform 0.1s, opacity 0.2s, background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .choice-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 var(--secondary-dark);
-    }
-
-    .choice-btn.wrong {
-      background: #CBD5E1;
-      box-shadow: 0 4px 0 #94A3B8;
-      opacity: 0.55;
-      pointer-events: none;
-      animation: shake 0.35s ease;
-    }
-
-    .choice-btn.correct {
-      background: #FF9F1C;
-      box-shadow: 0 5px 0 #E07A00;
-      animation: bounce 0.4s ease;
-    }
-
     .keypad-grid {
       flex: 1;
       min-height: 0;
-      display: none;
+      display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(4, 1fr);
       gap: clamp(6px, 1.4vmin, 10px);
@@ -493,10 +501,10 @@
 
     .key-btn {
       border: none;
-      border-radius: 14px;
+      border-radius: 16px;
       background: #FFFFFF;
       color: var(--text-main);
-      font-size: clamp(1.25rem, 4.2vmin, 2rem);
+      font-size: clamp(1.3rem, 4.4vmin, 2.1rem);
       font-weight: 800;
       box-shadow: 0 4px 0 #CBD5E1;
       cursor: pointer;
@@ -519,68 +527,149 @@
       box-shadow: 0 4px 0 var(--primary-dark);
     }
 
-    /* 칭찬 모달 */
+    /* 정답 맞힌 후 나타나는 설명 & 다음 문제 버튼 패널 */
+    .explain-panel {
+      flex: 1;
+      min-height: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 24px;
+      padding: clamp(12px, 2.5vmin, 22px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+      text-align: center;
+      gap: 8px;
+    }
+
+    .explain-badge {
+      background: #DCFCE7;
+      color: #15803D;
+      font-weight: 900;
+      font-size: clamp(0.95rem, 2.5vmin, 1.3rem);
+      padding: 6px 16px;
+      border-radius: 999px;
+    }
+
+    .step-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .step-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: clamp(0.72rem, 1.8vmin, 0.9rem);
+      font-weight: 800;
+      background: #E2E8F0;
+      color: #64748B;
+      transition: background 0.25s, color 0.25s, transform 0.25s;
+    }
+
+    .step-pill.active {
+      background: var(--secondary);
+      color: #FFFFFF;
+      transform: scale(1.06);
+    }
+
+    .explain-desc {
+      font-size: clamp(0.88rem, 2.2vmin, 1.12rem);
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .next-problem-btn {
+      width: 100%;
+      max-width: 340px;
+      border: none;
+      border-radius: 18px;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: clamp(1.2rem, 3.6vmin, 1.7rem);
+      font-weight: 900;
+      padding: clamp(12px, 2.4vmin, 18px);
+      box-shadow: 0 6px 0 var(--primary-dark);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .next-problem-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--primary-dark);
+    }
+
+    /* 모달 공통 */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.45);
+      background: rgba(0, 0, 0, 0.48);
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 18px;
       z-index: 100;
     }
 
     .modal-card {
       background: #FFFFFF;
-      border-radius: 28px;
-      padding: 26px 22px;
-      max-width: 380px;
+      border-radius: 26px;
+      padding: 22px 20px;
+      max-width: 420px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
-      animation: popIn 0.3s ease-out;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
     }
 
     .modal-card h2 {
-      font-size: 1.75rem;
-      margin-bottom: 8px;
-      color: var(--primary-dark);
+      font-size: 1.45rem;
+      margin-bottom: 10px;
+      color: var(--text-main);
     }
 
-    .modal-card p {
-      font-size: 1.05rem;
+    .modal-card p, .modal-card li {
+      font-size: 0.95rem;
       color: var(--text-sub);
-      margin-bottom: 18px;
+      line-height: 1.5;
       font-weight: 600;
+      text-align: left;
+    }
+
+    .modal-card ul {
+      padding-left: 18px;
+      margin: 10px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-btn-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
     }
 
     .modal-btn {
       border: none;
-      border-radius: 16px;
+      border-radius: 14px;
       background: var(--secondary);
       color: #FFF;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 800;
-      padding: 12px 26px;
-      box-shadow: 0 5px 0 var(--secondary-dark);
+      padding: 10px 18px;
+      box-shadow: 0 4px 0 var(--secondary-dark);
       cursor: pointer;
     }
 
-    @keyframes popIn {
-      0% { transform: scale(0.6); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-6px); }
-      75% { transform: translateX(6px); }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+    .modal-btn.secondary {
+      background: #E2E8F0;
+      color: #334155;
+      box-shadow: 0 4px 0 #CBD5E1;
     }
   </style>
 </head>
@@ -596,7 +685,7 @@
         <button class="level-btn" data-level="2">2단계</button>
         <button class="level-btn" data-level="3">3단계</button>
         <button class="type-btn" id="typeToggle">유형: 골고루</button>
-        <button class="mode-btn" id="modeToggle">보기 모드</button>
+        <button class="install-btn" id="installBtn">📲 앱 설치</button>
         <button class="sound-btn" id="soundToggle" aria-label="소리 켜기/끄기">🔊</button>
       </div>
       <div class="score-badge">
@@ -612,9 +701,9 @@
         <div class="equation-box" id="equationBox"></div>
       </section>
 
-      <!-- 정답 선택 영역 -->
+      <!-- 키패드 입력 및 정답 애니메이션 제어 영역 -->
       <section class="answer-panel">
-        <div class="choices-grid" id="choicesGrid"></div>
+        <!-- 1) 문제 풀이 중: 숫자 키패드 고정 -->
         <div class="keypad-grid" id="keypadGrid">
           <button class="key-btn" data-key="1">1</button>
           <button class="key-btn" data-key="2">2</button>
@@ -629,16 +718,49 @@
           <button class="key-btn" data-key="0">0</button>
           <button class="key-btn submit" data-key="submit">확인</button>
         </div>
+
+        <!-- 2) 정답 맞힌 후: 반복 애니메이션 단계 표시 & 다음 문제 버튼 -->
+        <div class="explain-panel" id="explainPanel">
+          <div class="explain-badge" id="explainBadge">🎉 정답이에요!</div>
+          <div class="step-dots">
+            <span class="step-pill active" id="stepPill0">① 문제 상태</span>
+            <span class="step-pill" id="stepPill1">② 그림 이동</span>
+            <span class="step-pill" id="stepPill2">③ 정답 완성</span>
+          </div>
+          <div class="explain-desc" id="explainDesc">
+            그림이 어떻게 움직여서 정답이 되는지 반복해서 보여주고 있어요!
+          </div>
+          <button class="next-problem-btn" id="nextProblemBtn">다음 문제 풀기 ▶</button>
+        </div>
       </section>
     </main>
+  </div>
+
+  <!-- 앱 설치 안내 및 '이미 설치됨' 오류 해결 모달 -->
+  <div class="modal-overlay" id="installModal">
+    <div class="modal-card">
+      <h2>📲 태블릿/모바일 앱 설치 안내</h2>
+      <ul>
+        <li><strong>설치가 안 되어 있는데 '이미 설치됨/앱 열기'라고 나올 때:</strong><br>
+          안드로이드 <strong>[설정 → 애플리케이션]</strong> 목록에서 예전에 설치했던 <em>덧셈 놀이터</em>나 <em>같은 깃허브 계정의 다른 웹앱</em>을 찾아 <strong>'삭제(제거)'</strong>한 뒤 다시 접속하면 정상 설치됩니다.</li>
+        <li><strong>아이패드 / 아이폰 (Safari·Chrome):</strong><br>
+          브라우저의 <strong>[공유(↑) 버튼 → 홈 화면에 추가]</strong>를 누르면 전체화면 앱으로 설치됩니다.</li>
+        <li><strong>안드로이드 크롬 수동 추가:</strong><br>
+          우측 상단 <strong>[점 3개(⋮) 메뉴 → 홈 화면에 추가(또는 앱 설치)]</strong>를 눌러주세요.</li>
+      </ul>
+      <div class="modal-btn-row">
+        <button class="modal-btn secondary" id="resetSwBtn">🔄 캐시·설치정보 초기화</button>
+        <button class="modal-btn" id="closeInstallModalBtn">닫기</button>
+      </div>
+    </div>
   </div>
 
   <!-- 10문제 달성 축하 모달 -->
   <div class="modal-overlay" id="celebrationModal">
     <div class="modal-card">
       <div style="font-size: 3.2rem; margin-bottom: 8px;">🎉🌟🎉</div>
-      <h2>우와! 멋져요!</h2>
-      <p id="modalMessage">차근차근 생각해서 벌써 10문제를 풀었어요!</p>
+      <h2 style="text-align: center;">우와! 멋져요!</h2>
+      <p id="modalMessage" style="text-align: center; margin-bottom: 16px;">차근차근 생각해서 벌써 10문제를 풀었어요!</p>
       <button class="modal-btn" id="continueBtn">계속 놀이하기</button>
     </div>
   </div>
@@ -651,12 +773,9 @@
 
     const EMOJIS = ['🍎', '🍓', '🍊', '🍌', '🍇', '🐶', '🐱', '🐰', '🐥', '🐢', '🚗', '🎈'];
 
-    // 상태 변수
     let level = 1;
-    // questionTypeFilter: 'mixed' (골고루) | 'balance' (3+5=2+?) | 'basic' (3+2=?)
     let questionTypeFilter = 'mixed';
-    let currentProblemType = 'balance'; // 첫 문제에서 바로 확인하실 수 있도록 시작 시 적용
-    let isKeypadMode = false;
+    let currentProblemType = 'basic';
     let soundEnabled = true;
     let stars = Number(localStorage.getItem('addition_stars') || 0);
 
@@ -667,22 +786,27 @@
     let currentEmoji = '🍎';
     let typedInput = '';
     let isLocked = false;
+    let animTimers = [];
 
     const starCountEl = document.getElementById('starCount');
     const feedbackTextEl = document.getElementById('feedbackText');
     const visualBoxEl = document.getElementById('visualBox');
     const equationBoxEl = document.getElementById('equationBox');
-    const choicesGridEl = document.getElementById('choicesGrid');
     const keypadGridEl = document.getElementById('keypadGrid');
+    const explainPanelEl = document.getElementById('explainPanel');
+    const explainBadgeEl = document.getElementById('explainBadge');
+    const explainDescEl = document.getElementById('explainDesc');
+    const nextProblemBtn = document.getElementById('nextProblemBtn');
     const typeToggleBtn = document.getElementById('typeToggle');
-    const modeToggleBtn = document.getElementById('modeToggle');
     const soundToggleBtn = document.getElementById('soundToggle');
+    const installBtn = document.getElementById('installBtn');
+    const installModal = document.getElementById('installModal');
     const celebrationModal = document.getElementById('celebrationModal');
     const modalMessage = document.getElementById('modalMessage');
 
     starCountEl.textContent = stars;
 
-    // 효과음 합성 (Web Audio API)
+    // 효과음 (Web Audio API)
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -706,6 +830,17 @@
             osc.start(now + idx * 0.08);
             osc.stop(now + idx * 0.08 + 0.24);
           });
+        } else if (type === 'step') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.13);
         } else if (type === 'wrong') {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -713,7 +848,7 @@
           osc.frequency.setValueAtTime(240, now);
           osc.frequency.linearRampToValueAtTime(180, now + 0.2);
           gain.gain.setValueAtTime(0.15, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.22);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start(now);
@@ -726,17 +861,57 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    // 모든 진행 중인 애니메이션 타이머 정리
+    function clearAnimLoop() {
+      animTimers.forEach((id) => clearTimeout(id));
+      animTimers = [];
+    }
+
+    // FLIP 위치 측정 및 부드러운 이동 애니메이션 실행
+    function captureItemPositions() {
+      const posMap = new Map();
+      visualBoxEl.querySelectorAll('[data-flip-id]').forEach((el) => {
+        posMap.set(el.dataset.flipId, el.getBoundingClientRect());
+      });
+      return posMap;
+    }
+
+    function animateFLIP(prevMap) {
+      visualBoxEl.querySelectorAll('[data-flip-id]').forEach((el) => {
+        const prev = prevMap.get(el.dataset.flipId);
+        if (!prev) return;
+        const next = el.getBoundingClientRect();
+        const dx = prev.left - next.left;
+        const dy = prev.top - next.top;
+        if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+          el.style.transition = 'none';
+          el.style.transform = `translate(${dx}px, ${dy}px) scale(1.12)`;
+          el.style.zIndex = '20';
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              el.style.transform = 'translate(0, 0) scale(1)';
+            });
+          });
+        }
+      });
+    }
+
     /**
-     * 5개 단위 줄 바꿈 & 10개 묶음 내부 10개 전체 표시(5x2) DOM 생성 함수
+     * 아이템 목록(itemsData)을 5개 단위 줄 바꿈 & 10묶음(5x2) 구조로 생성
+     * itemsData: [{ id: 'L-0', emoji: '🍎', extraClass: '', isTargetSlot: false }, ...]
      */
-    function createCountNode(count, emoji) {
+    function createCountNodeFromItems(itemsData) {
+      const count = itemsData.length;
       const tens = Math.floor(count / 10);
       const ones = count % 10;
 
       const wrapper = document.createElement('div');
       wrapper.className = 'bundles-wrap';
 
-      // 1) 10개 묶음: 상자 안에 실제 아이콘 10개를 5개씩 2줄(5x2)로 배치
+      let idx = 0;
+
+      // 1) 10개 묶음 (상자 안에 실제 아이템 10개를 5개씩 2줄로 배치)
       for (let t = 0; t < tens; t++) {
         const bundleBox = document.createElement('div');
         bundleBox.className = 'ten-bundle';
@@ -749,28 +924,23 @@
         const grid10 = document.createElement('div');
         grid10.className = 'ten-bundle-grid';
         for (let i = 0; i < 10; i++) {
-          const item = document.createElement('span');
-          item.className = 'emoji-item';
-          item.textContent = emoji;
-          grid10.appendChild(item);
+          const data = itemsData[idx++];
+          grid10.appendChild(createSingleItemEl(data));
         }
         bundleBox.appendChild(grid10);
         wrapper.appendChild(bundleBox);
       }
 
-      // 2) 낱개(1~9개): 5열 그리드(repeat(5, 1fr))에 배치하여 5개 단위로 정확히 줄 바꿈
+      // 2) 낱개(1~9개): 5개 단위로 줄이 바뀌는 5열 그리드
       if (ones > 0) {
         const onesGrid = document.createElement('div');
         onesGrid.className = 'ones-grid';
 
-        // 5개 단위의 기준틀(5칸 또는 10칸)을 유지하기 위해 빈 칸은 은은한 점으로 채움
         const totalSlots = ones <= 5 ? 5 : 10;
         for (let i = 0; i < totalSlots; i++) {
           if (i < ones) {
-            const item = document.createElement('span');
-            item.className = 'emoji-item';
-            item.textContent = emoji;
-            onesGrid.appendChild(item);
+            const data = itemsData[idx++];
+            onesGrid.appendChild(createSingleItemEl(data));
           } else {
             const dot = document.createElement('span');
             dot.className = 'empty-slot-dot';
@@ -783,144 +953,311 @@
       return wrapper;
     }
 
-    // 시각 영역 및 수식 렌더링
-    function renderProblemView(revealAnswer = false) {
+    function createSingleItemEl(data) {
+      if (data.isTargetSlot) {
+        const slot = document.createElement('span');
+        slot.className = 'target-slot-item';
+        slot.dataset.flipId = data.id;
+        slot.textContent = '?';
+        return slot;
+      }
+      const span = document.createElement('span');
+      span.className = 'emoji-item' + (data.extraClass ? ` ${data.extraClass}` : '');
+      span.dataset.flipId = data.id;
+      span.textContent = data.emoji;
+      return span;
+    }
+
+    function makeItemList(prefix, startIdx, count, emoji, extraClass = '', isTargetSlot = false) {
+      const arr = [];
+      for (let i = 0; i < count; i++) {
+        arr.push({
+          id: `${prefix}-${startIdx + i}`,
+          emoji,
+          extraClass,
+          isTargetSlot
+        });
+      }
+      return arr;
+    }
+
+    function setStepPill(stepIndex) {
+      ['stepPill0', 'stepPill1', 'stepPill2'].forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', idx === stepIndex);
+      });
+    }
+
+    /**
+     * 화면 렌더링 (stage: 0 = 문제 풀기 전 상태, 1 = 이동/비교 중간 단계, 2 = 정답 완성 상태)
+     */
+    function renderStage(stage, withFlip = true) {
+      const prevMap = withFlip ? captureItemPositions() : null;
       visualBoxEl.innerHTML = '';
       equationBoxEl.innerHTML = '';
 
+      const sumTotal = currentA + currentB;
+
       if (currentProblemType === 'basic') {
-        // [기본형] A + B = ?
         visualBoxEl.classList.remove('balance-mode');
         equationBoxEl.classList.remove('balance-eq');
 
-        const leftGroup = document.createElement('div');
-        leftGroup.className = 'item-group' + (currentA >= 10 ? ' has-tens' : '');
-        leftGroup.innerHTML = `<span class="group-count-label">${currentA}개</span>`;
-        leftGroup.appendChild(createCountNode(currentA, currentEmoji));
+        const itemsA = makeItemList('M', 0, currentA, currentEmoji, '');
+        const itemsB = makeItemList('M', currentA, currentB, currentEmoji, stage > 0 ? 'from-second' : '');
 
-        const op = document.createElement('div');
-        op.className = 'visual-operator';
-        op.textContent = '+';
+        if (stage === 0) {
+          // [0단계] 문제 풀기 이전 상태: A와 B가 좌우 박스에 따로 분리됨
+          const leftGroup = document.createElement('div');
+          leftGroup.className = 'item-group' + (currentA >= 10 ? ' has-tens' : '');
+          leftGroup.innerHTML = `<span class="group-count-label">처음 ${currentA}개</span>`;
+          leftGroup.appendChild(createCountNodeFromItems(itemsA));
 
-        const rightGroup = document.createElement('div');
-        rightGroup.className = 'item-group' + (currentB >= 10 ? ' has-tens' : '');
-        rightGroup.innerHTML = `<span class="group-count-label">${currentB}개</span>`;
-        rightGroup.appendChild(createCountNode(currentB, currentEmoji));
+          const op = document.createElement('div');
+          op.className = 'visual-operator';
+          op.textContent = '+';
 
-        visualBoxEl.append(leftGroup, op, rightGroup);
+          const rightGroup = document.createElement('div');
+          rightGroup.className = 'item-group' + (currentB >= 10 ? ' has-tens' : '');
+          rightGroup.innerHTML = `<span class="group-count-label">더할 ${currentB}개</span>`;
+          rightGroup.appendChild(createCountNodeFromItems(itemsB));
 
-        equationBoxEl.innerHTML = `
-          <span>${currentA}</span>
-          <span>+</span>
-          <span>${currentB}</span>
-          <span>=</span>
-          <span class="answer-slot" id="answerSlot">${revealAnswer ? correctAnswer : (typedInput || '?')}</span>
-        `;
+          visualBoxEl.append(leftGroup, op, rightGroup);
+
+          equationBoxEl.innerHTML = `
+            <span>${currentA}</span>
+            <span>+</span>
+            <span>${currentB}</span>
+            <span>=</span>
+            <span class="answer-slot" id="answerSlot">${isLocked ? '?' : (typedInput || '?')}</span>
+          `;
+        } else {
+          // [1~2단계] 오른쪽 B 그림들이 왼쪽 A의 빈칸(5개 줄 / 10묶음)으로 이동해 합쳐짐
+          const combinedItems = [...itemsA, ...itemsB];
+          const mergedGroup = document.createElement('div');
+          mergedGroup.className = 'item-group' + (sumTotal >= 10 ? ' has-tens' : '') + (stage === 2 ? ' solved-highlight' : '');
+
+          const tens = Math.floor(sumTotal / 10);
+          const ones = sumTotal % 10;
+          const summaryText = tens > 0
+            ? `${currentA}개에 ${currentB}개가 합쳐져 [10묶음 ${tens}개 + 낱개 ${ones}개 = ${sumTotal}개]`
+            : `${currentA}개에 ${currentB}개가 5개씩 채워져 [총 ${sumTotal}개]`;
+
+          mergedGroup.innerHTML = `<span class="group-count-label">${summaryText}</span>`;
+          mergedGroup.appendChild(createCountNodeFromItems(combinedItems));
+          visualBoxEl.appendChild(mergedGroup);
+
+          equationBoxEl.innerHTML = `
+            <span>${currentA}</span>
+            <span>+</span>
+            <span>${currentB}</span>
+            <span>=</span>
+            <span class="answer-slot solved" id="answerSlot">${correctAnswer}</span>
+          `;
+        }
       } else {
-        // [양변 균형형] A + B = C + ? (예: 3 + 5 = 2 + ?)
+        // [양변 균형형] A + B = C + ?
         visualBoxEl.classList.add('balance-mode');
         equationBoxEl.classList.add('balance-eq');
 
-        const sumTotal = currentA + currentB;
+        const leftItemsA = makeItemList('L', 0, currentA, currentEmoji, '');
+        const leftItemsB = makeItemList('L', currentA, currentB, currentEmoji, stage > 0 ? 'from-second' : '');
+        const rightItemsC = makeItemList('R', 0, currentC, currentEmoji, '');
 
-        // 왼쪽 변 (A + B)
         const leftSide = document.createElement('div');
-        leftSide.className = 'balance-side';
-        leftSide.innerHTML = `<div class="balance-side-title">왼쪽: ${currentA} + ${currentB} (합 ${sumTotal})</div>`;
+        leftSide.className = 'balance-side' + (stage === 2 ? ' solved-highlight' : '');
 
-        const leftSub = document.createElement('div');
-        leftSub.className = 'balance-subgroups';
-
-        const subA = document.createElement('div');
-        subA.className = 'balance-sub-item';
-        subA.appendChild(createCountNode(currentA, currentEmoji));
-
-        const plusL = document.createElement('div');
-        plusL.className = 'balance-plus';
-        plusL.textContent = '+';
-
-        const subB = document.createElement('div');
-        subB.className = 'balance-sub-item';
-        subB.appendChild(createCountNode(currentB, currentEmoji));
-
-        leftSub.append(subA, plusL, subB);
-        leftSide.appendChild(leftSub);
-
-        // 가운데 등호(=)
-        const eqSign = document.createElement('div');
-        eqSign.className = 'visual-operator';
-        eqSign.textContent = '=';
-
-        // 오른쪽 변 (C + ?)
         const rightSide = document.createElement('div');
-        rightSide.className = 'balance-side';
-        rightSide.innerHTML = `<div class="balance-side-title">오른쪽: ${currentC} + ${revealAnswer ? correctAnswer : '?'}</div>`;
+        rightSide.className = 'balance-side' + (stage === 2 ? ' solved-highlight' : '');
 
-        const rightSub = document.createElement('div');
-        rightSub.className = 'balance-subgroups';
+        if (stage === 0) {
+          // [0단계] 문제 풀기 이전 상태
+          leftSide.innerHTML = `<div class="balance-side-title">왼쪽: ${currentA} + ${currentB}</div>`;
+          const leftSub = document.createElement('div');
+          leftSub.className = 'balance-subgroups';
 
-        const subC = document.createElement('div');
-        subC.className = 'balance-sub-item';
-        subC.appendChild(createCountNode(currentC, currentEmoji));
+          const subA = document.createElement('div');
+          subA.className = 'balance-sub-item';
+          subA.appendChild(createCountNodeFromItems(leftItemsA));
 
-        const plusR = document.createElement('div');
-        plusR.className = 'balance-plus';
-        plusR.textContent = '+';
+          const plusL = document.createElement('div');
+          plusL.className = 'balance-plus';
+          plusL.textContent = '+';
 
-        const subD = document.createElement('div');
-        subD.className = 'balance-sub-item';
-        if (revealAnswer) {
-          subD.appendChild(createCountNode(correctAnswer, currentEmoji));
-        } else {
+          const subB = document.createElement('div');
+          subB.className = 'balance-sub-item';
+          subB.appendChild(createCountNodeFromItems(leftItemsB));
+
+          leftSub.append(subA, plusL, subB);
+          leftSide.appendChild(leftSub);
+
+          rightSide.innerHTML = `<div class="balance-side-title">오른쪽: ${currentC} + ?</div>`;
+          const rightSub = document.createElement('div');
+          rightSub.className = 'balance-subgroups';
+
+          const subC = document.createElement('div');
+          subC.className = 'balance-sub-item';
+          subC.appendChild(createCountNodeFromItems(rightItemsC));
+
+          const plusR = document.createElement('div');
+          plusR.className = 'balance-plus';
+          plusR.textContent = '+';
+
+          const subD = document.createElement('div');
+          subD.className = 'balance-sub-item';
           const mystery = document.createElement('div');
           mystery.className = 'mystery-visual-box';
           mystery.textContent = '? 개';
           subD.appendChild(mystery);
+
+          rightSub.append(subC, plusR, subD);
+          rightSide.appendChild(rightSub);
+
+          equationBoxEl.innerHTML = `
+            <span>${currentA}</span>
+            <span>+</span>
+            <span>${currentB}</span>
+            <span>=</span>
+            <span>${currentC}</span>
+            <span>+</span>
+            <span class="answer-slot" id="answerSlot">${isLocked ? '?' : (typedInput || '?')}</span>
+          `;
+        } else if (stage === 1) {
+          // [1단계] 왼쪽 A+B가 하나로 합쳐져 총합을 보여주고, 오른쪽은 똑같아지기 위해 필요한 빈칸(?) 개수를 5단위 배열로 표시
+          leftSide.innerHTML = `<div class="balance-side-title">왼쪽 합침: 모두 ${sumTotal}개</div>`;
+          const leftSub = document.createElement('div');
+          leftSub.className = 'balance-subgroups';
+          leftSub.appendChild(createCountNodeFromItems([...leftItemsA, ...leftItemsB]));
+          leftSide.appendChild(leftSub);
+
+          rightSide.innerHTML = `<div class="balance-side-title">오른쪽: ${currentC}개 + 빈칸 ${correctAnswer}개</div>`;
+          const rightSub = document.createElement('div');
+          rightSub.className = 'balance-subgroups';
+          const targetSlots = makeItemList('R', currentC, correctAnswer, '?', '', true);
+          rightSub.appendChild(createCountNodeFromItems([...rightItemsC, ...targetSlots]));
+          rightSide.appendChild(rightSub);
+
+          equationBoxEl.innerHTML = `
+            <span>${currentA}</span>
+            <span>+</span>
+            <span>${currentB}</span>
+            <span>=</span>
+            <span>${currentC}</span>
+            <span>+</span>
+            <span class="answer-slot" id="answerSlot">?</span>
+          `;
+        } else {
+          // [2단계] 오른쪽 빈칸에 정답 개수의 그림이 채워져 양쪽 5단위 배열이 완전히 똑같아짐
+          leftSide.innerHTML = `<div class="balance-side-title">왼쪽: ${currentA} + ${currentB} = ${sumTotal}개</div>`;
+          const leftSub = document.createElement('div');
+          leftSub.className = 'balance-subgroups';
+          leftSub.appendChild(createCountNodeFromItems([...leftItemsA, ...leftItemsB]));
+          leftSide.appendChild(leftSub);
+
+          rightSide.innerHTML = `<div class="balance-side-title">오른쪽: ${currentC} + ${correctAnswer} = ${sumTotal}개</div>`;
+          const rightSub = document.createElement('div');
+          rightSub.className = 'balance-subgroups';
+          const rightItemsD = makeItemList('R', currentC, correctAnswer, currentEmoji, 'from-answer', false);
+          rightSub.appendChild(createCountNodeFromItems([...rightItemsC, ...rightItemsD]));
+          rightSide.appendChild(rightSub);
+
+          equationBoxEl.innerHTML = `
+            <span>${currentA}</span>
+            <span>+</span>
+            <span>${currentB}</span>
+            <span>=</span>
+            <span>${currentC}</span>
+            <span>+</span>
+            <span class="answer-slot solved" id="answerSlot">${correctAnswer}</span>
+          `;
         }
 
-        rightSub.append(subC, plusR, subD);
-        rightSide.appendChild(rightSub);
+        const eqSign = document.createElement('div');
+        eqSign.className = 'visual-operator';
+        eqSign.textContent = '=';
 
         visualBoxEl.append(leftSide, eqSign, rightSide);
-
-        equationBoxEl.innerHTML = `
-          <span>${currentA}</span>
-          <span>+</span>
-          <span>${currentB}</span>
-          <span>=</span>
-          <span>${currentC}</span>
-          <span>+</span>
-          <span class="answer-slot" id="answerSlot">${revealAnswer ? correctAnswer : (typedInput || '?')}</span>
-        `;
       }
+
+      if (withFlip && prevMap) {
+        animateFLIP(prevMap);
+      }
+    }
+
+    // 정답 맞힌 후 무한 반복되는 시각적 원리 애니메이션 루프
+    function startExplanationLoop() {
+      clearAnimLoop();
+      const sumTotal = currentA + currentB;
+
+      function runCycle() {
+        // 1) 먼저 문제 풀기 이전 상태(0단계)부터 시작
+        setStepPill(0);
+        renderStage(0, true);
+        if (currentProblemType === 'basic') {
+          feedbackTextEl.textContent = `① 처음 상태: ${currentA}개와 ${currentB}개가 따로 놓여 있어요.`;
+        } else {
+          feedbackTextEl.textContent = `① 처음 상태: 왼쪽(${currentA}+${currentB})과 오른쪽(${currentC}+?)을 비교해 볼까요?`;
+        }
+
+        // 2) 1.3초 후: 그림들이 이동하여 합쳐지거나 빈칸 자리를 보여주는 단계(1단계)
+        const t1 = setTimeout(() => {
+          setStepPill(1);
+          playTone('step');
+          renderStage(1, true);
+          if (currentProblemType === 'basic') {
+            feedbackTextEl.textContent = `② 그림 이동: 오른쪽 ${currentB}개가 옮겨와 5개씩 줄을 채워요!`;
+          } else {
+            feedbackTextEl.textContent = `② 비교하기: 왼쪽은 합쳐서 ${sumTotal}개! 오른쪽 ${currentC}개 옆에 빈칸이 ${correctAnswer}개 있어요!`;
+          }
+        }, 1350);
+
+        // 3) 2.9초 후: 정답 완성 상태(2단계) 강조
+        const t2 = setTimeout(() => {
+          setStepPill(2);
+          playTone('step');
+          renderStage(2, true);
+          if (currentProblemType === 'basic') {
+            feedbackTextEl.textContent = `③ 정답 완성: 한 줄에 5개씩 세어 보면 모두 ${correctAnswer}개가 되었어요!`;
+          } else {
+            feedbackTextEl.textContent = `③ 정답 완성: 빈칸에 ${correctAnswer}개를 채우니 양쪽 모두 ${sumTotal}개로 똑같아졌어요!`;
+          }
+        }, 2950);
+
+        // 4) 5.1초 후: 다시 문제 풀기 이전 상태(0단계)로 돌아가 반복
+        const t3 = setTimeout(() => {
+          runCycle();
+        }, 5200);
+
+        animTimers.push(t1, t2, t3);
+      }
+
+      runCycle();
     }
 
     // 새 문제 생성
     function generateQuestion() {
+      clearAnimLoop();
       isLocked = false;
       typedInput = '';
       currentEmoji = EMOJIS[randInt(0, EMOJIS.length - 1)];
 
-      // 문제 유형 결정
+      keypadGridEl.style.display = 'grid';
+      explainPanelEl.style.display = 'none';
+
       if (questionTypeFilter === 'basic') {
         currentProblemType = 'basic';
       } else if (questionTypeFilter === 'balance') {
         currentProblemType = 'balance';
       } else {
-        // 골고루 모드: 번갈아 가며 출제
         currentProblemType = currentProblemType === 'basic' ? 'balance' : 'basic';
       }
 
       if (level === 1) {
-        // 1단계: 합이 10 이하
         currentA = randInt(2, 5);
         currentB = randInt(2, 10 - currentA);
       } else if (level === 2) {
-        // 2단계: 한 자리 + 한 자리 (합 20 이하)
         currentA = randInt(4, 9);
         currentB = randInt(3, 9);
       } else {
-        // 3단계: 두 자리(10묶음 포함) + 한 자리
         currentA = randInt(11, 22);
         currentB = randInt(2, 8);
       }
@@ -929,10 +1266,8 @@
 
       if (currentProblemType === 'basic') {
         correctAnswer = sumTotal;
-        feedbackTextEl.textContent = '5개씩 줄 지어 있는 그림을 세어 보고 합을 구해 보세요!';
+        feedbackTextEl.textContent = '5개씩 줄 지어 있는 그림을 세어 보고 숫자를 입력해 보세요!';
       } else {
-        // A + B = C + ? (양쪽이 같아지는 수 찾기)
-        // C는 1 이상 (sumTotal - 1) 이하이면서 가급적 A, B와 다른 수로 설정
         const candidates = [];
         const maxC = level === 3 ? sumTotal - 2 : Math.min(9, sumTotal - 1);
         const minC = level === 3 ? Math.max(10, sumTotal - 12) : Math.max(1, sumTotal - 9);
@@ -947,82 +1282,58 @@
           : randInt(1, sumTotal - 1);
 
         correctAnswer = sumTotal - currentC;
-        feedbackTextEl.textContent = `왼쪽 합은 ${sumTotal}개예요! 오른쪽 ${currentC}개에 몇 개를 더하면 같아질까요?`;
+        feedbackTextEl.textContent = `양쪽 개수가 같아지려면 ? 자리에 몇 개가 들어갈까요?`;
       }
 
-      feedbackTextEl.style.color = '#5C677D';
-      renderProblemView(false);
-      renderChoices();
-    }
-
-    // 4지선다 보기 생성
-    function renderChoices() {
-      choicesGridEl.innerHTML = '';
-      const options = new Set([correctAnswer]);
-
-      while (options.size < 4) {
-        const offset = randInt(-3, 4);
-        const candidate = correctAnswer + offset;
-        if (candidate > 0 && candidate !== correctAnswer) {
-          options.add(candidate);
-        }
-      }
-
-      Array.from(options)
-        .sort(() => Math.random() - 0.5)
-        .forEach((val) => {
-          const btn = document.createElement('button');
-          btn.className = 'choice-btn';
-          btn.textContent = val;
-          btn.addEventListener('click', () => checkAnswer(val, btn));
-          choicesGridEl.appendChild(btn);
-        });
+      feedbackTextEl.style.color = '#334155';
+      renderStage(0, false);
     }
 
     // 정답 확인
-    function checkAnswer(selectedValue, buttonEl = null) {
+    function checkAnswer(selectedValue) {
       if (isLocked) return;
 
       if (Number(selectedValue) === correctAnswer) {
         isLocked = true;
-        renderProblemView(true);
-        if (buttonEl) buttonEl.classList.add('correct');
         playTone('correct');
-
-        if (currentProblemType === 'balance') {
-          feedbackTextEl.textContent = `정답이에요! 양쪽 모두 ${currentA + currentB}개로 똑같아졌어요!`;
-        } else {
-          const praises = [
-            '정답이에요! 5개씩 묶어 세니 정말 빠르네요!',
-            '우와, 정확해요! 계산 실력이 쑥쑥 자라요!',
-            '딩동댕! 스스로 힘을 내서 맞혔어요!'
-          ];
-          feedbackTextEl.textContent = praises[randInt(0, praises.length - 1)];
-        }
-        feedbackTextEl.style.color = '#1B998B';
 
         stars += 1;
         starCountEl.textContent = stars;
         localStorage.setItem('addition_stars', stars);
 
-        setTimeout(() => {
-          if (stars > 0 && stars % 10 === 0) {
-            modalMessage.textContent = `벌써 별을 ${stars}개나 모았어요! 정말 대단해요!`;
-            celebrationModal.style.display = 'flex';
-          } else {
-            generateQuestion();
-          }
-        }, 1100);
+        // 키패드를 숨기고 애니메이션 설명 & 다음 문제 버튼 패널 표시
+        keypadGridEl.style.display = 'none';
+        explainPanelEl.style.display = 'flex';
+        explainBadgeEl.textContent = `🎉 정답은 ${correctAnswer}이에요!`;
+
+        if (currentProblemType === 'basic') {
+          explainDescEl.textContent = `${currentA}개에 ${currentB}개가 어떻게 합쳐져 ${correctAnswer}개가 되는지 위 그림을 보세요!`;
+        } else {
+          explainDescEl.textContent = `왼쪽(${currentA}+${currentB})과 오른쪽(${currentC}+${correctAnswer})이 어떻게 ${currentA + currentB}개로 같아지는지 보세요!`;
+        }
+
+        // 문제 풀기 이전 상태에서 시작해 정답 상태로 이어지는 반복 애니메이션 실행
+        startExplanationLoop();
       } else {
         playTone('wrong');
-        if (buttonEl) buttonEl.classList.add('wrong');
-        feedbackTextEl.textContent = '아하! 5개씩 줄 지어 있는 그림을 한 번 더 세어 볼까요?';
+        feedbackTextEl.textContent = '아하! 5개씩 줄 지어 있는 그림을 한 번 더 천천히 세어 볼까요?';
         feedbackTextEl.style.color = '#E07A00';
         typedInput = '';
         const slot = document.getElementById('answerSlot');
-        if (isKeypadMode && slot) slot.textContent = '?';
+        if (slot) slot.textContent = '?';
       }
     }
+
+    // '다음 문제 풀기' 버튼 클릭
+    nextProblemBtn.addEventListener('click', () => {
+      clearAnimLoop();
+      if (stars > 0 && stars % 10 === 0) {
+        modalMessage.textContent = `벌써 별을 ${stars}개나 모았어요! 정말 대단해요!`;
+        celebrationModal.style.display = 'flex';
+      } else {
+        generateQuestion();
+      }
+    });
 
     // 단계 선택 이벤트
     document.querySelectorAll('.level-btn').forEach((btn) => {
@@ -1034,7 +1345,7 @@
       });
     });
 
-    // 문제 유형 전환 (골고루 -> A+B=C+? -> A+B=?)
+    // 문제 유형 전환
     typeToggleBtn.addEventListener('click', () => {
       if (questionTypeFilter === 'mixed') {
         questionTypeFilter = 'balance';
@@ -1047,17 +1358,6 @@
         typeToggleBtn.textContent = '유형: 골고루';
       }
       generateQuestion();
-    });
-
-    // 보기 모드 / 키패드 모드 전환
-    modeToggleBtn.addEventListener('click', () => {
-      isKeypadMode = !isKeypadMode;
-      modeToggleBtn.textContent = isKeypadMode ? '키패드 모드' : '보기 모드';
-      choicesGridEl.style.display = isKeypadMode ? 'none' : 'grid';
-      keypadGridEl.style.display = isKeypadMode ? 'grid' : 'none';
-      typedInput = '';
-      const slot = document.getElementById('answerSlot');
-      if (slot) slot.textContent = '?';
     });
 
     // 소리 켜기/끄기
@@ -1091,8 +1391,57 @@
       generateQuestion();
     });
 
-    // 첫 문제 시작 (첫 화면에서 3+5=2+? 유형이 바로 보이도록 currentProblemType 초기값 설정)
-    currentProblemType = 'basic'; // generateQuestion 내부에서 'balance'로 전환됨
+    // PWA 설치 제어 (실제 standalone 실행 중일 때만 설치 버튼 숨김)
+    let deferredInstallPrompt = null;
+    const isRunningStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+
+    if (isRunningStandalone) {
+      installBtn.style.display = 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      installBtn.style.display = 'inline-block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+      } else {
+        installModal.style.display = 'flex';
+      }
+    });
+
+    document.getElementById('closeInstallModalBtn').addEventListener('click', () => {
+      installModal.style.display = 'none';
+    });
+
+    // 캐시 및 서비스워커 초기화 버튼 (설치 꼬임 해결용)
+    document.getElementById('resetSwBtn').addEventListener('click', async () => {
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) {
+            await reg.unregister();
+          }
+        }
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          for (const key of keys) {
+            await caches.delete(key);
+          }
+        }
+      } catch (e) {}
+      location.reload();
+    });
+
+    // 초기 실행
+    currentProblemType = 'basic';
     generateQuestion();
 
     // 서비스 워커 등록
