@@ -1,4 +1,4 @@
-const CACHE_NAME = 'addition-playground-dynamic';
+const CACHE_NAME = 'addition-playground-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -7,7 +7,6 @@ const ASSETS = [
   './icon.ico'
 ];
 
-// 설치 즉시 대기 상태를 건너뛰고 새 서비스 워커 활성화
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -15,7 +14,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 활성화 즉시 열린 모든 탭/앱 화면의 제어권 확보
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -30,9 +28,38 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 네트워크 우선 전략 (코드 수정 시 즉시 최신본 반영, 오프라인 시에만 캐시 사용)
+// icon.png(301x301)를 크롬 설치 규격(192x192, 512x512)으로 실시간 변환
+async function generateResizedIcon(size) {
+  const response = await fetch('./icon.png', { cache: 'no-cache' });
+  const blob = await response.blob();
+
+  if (typeof OffscreenCanvas !== 'undefined' && typeof createImageBitmap !== 'undefined') {
+    const bitmap = await createImageBitmap(blob);
+    const canvas = new OffscreenCanvas(size, size);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0, size, size);
+    const resizedBlob = await canvas.convertToBlob({ type: 'image/png' });
+    return new Response(resizedBlob, {
+      headers: { 'Content-Type': 'image/png', 'Cache-Control': 'no-cache' }
+    });
+  }
+  return new Response(blob, { headers: { 'Content-Type': 'image/png' } });
+}
+
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  if (url.pathname.endsWith('/icon-192.png')) {
+    event.respondWith(generateResizedIcon(192).catch(() => fetch('./icon.png')));
+    return;
+  }
+
+  if (url.pathname.endsWith('/icon-512.png')) {
+    event.respondWith(generateResizedIcon(512).catch(() => fetch('./icon.png')));
+    return;
+  }
 
   event.respondWith(
     fetch(event.request, { cache: 'no-cache' })
