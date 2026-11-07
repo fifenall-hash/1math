@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="덧셈놀이터">
 
-  <!-- 아이콘 및 매니페스트 연결 (icon.ico, icon.png 반영) -->
+  <!-- 아이콘 및 매니페스트 연결 -->
   <link rel="icon" href="./icon.ico" sizes="any">
   <link rel="icon" href="./icon.png" type="image/png">
   <link rel="apple-touch-icon" href="./icon.png">
@@ -56,20 +56,19 @@
       color: var(--text-main);
     }
 
-    /* 전체 앱 컨테이너 (노치 및 홈바 안전 영역 대응) */
     #app {
       width: 100%;
       height: 100dvh;
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
       padding:
-        max(10px, env(safe-area-inset-top))
-        max(14px, env(safe-area-inset-right))
-        max(12px, env(safe-area-inset-bottom))
-        max(14px, env(safe-area-inset-left));
+        max(8px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     /* 상단 컨트롤 바 */
@@ -77,43 +76,44 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.85);
-      padding: 8px 12px;
-      border-radius: 18px;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.88);
+      padding: 6px 10px;
+      border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-weight: 800;
-      font-size: clamp(0.95rem, 2.5vmin, 1.25rem);
+      font-size: clamp(0.88rem, 2.2vmin, 1.15rem);
       color: var(--text-main);
       white-space: nowrap;
     }
 
     .brand img {
-      width: clamp(24px, 4vmin, 32px);
-      height: clamp(24px, 4vmin, 32px);
-      border-radius: 8px;
+      width: clamp(22px, 3.8vmin, 30px);
+      height: clamp(22px, 3.8vmin, 30px);
+      border-radius: 7px;
       object-fit: cover;
     }
 
     .controls {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: nowrap;
+      gap: 5px;
+      flex-wrap: wrap;
     }
 
-    .level-btn, .mode-btn, .sound-btn {
+    .level-btn, .type-btn, .mode-btn, .sound-btn {
       border: none;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: clamp(0.75rem, 2vmin, 0.95rem);
+      border-radius: 10px;
+      padding: 5px 8px;
+      font-size: clamp(0.72rem, 1.8vmin, 0.9rem);
       font-weight: 700;
       cursor: pointer;
       transition: transform 0.1s, background 0.2s;
@@ -125,7 +125,12 @@
     .level-btn.active {
       background: var(--primary);
       color: #FFF;
-      box-shadow: 0 3px 0 var(--primary-dark);
+      box-shadow: 0 2px 0 var(--primary-dark);
+    }
+
+    .type-btn {
+      background: #EDE9FE;
+      color: #6D28D9;
     }
 
     .mode-btn {
@@ -138,52 +143,53 @@
       align-items: center;
       gap: 4px;
       background: #FFF3B0;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 999px;
       font-weight: 800;
-      font-size: clamp(0.85rem, 2.2vmin, 1.1rem);
+      font-size: clamp(0.8rem, 2vmin, 1.05rem);
       color: #B45309;
       white-space: nowrap;
     }
 
-    /* 메인 게임 영역 (세로 모드: 상하 배치 / 가로 모드: 좌우 배치) */
+    /* 메인 게임 영역 (세로: 상하 / 가로: 좌우) */
     .game-area {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     @media (orientation: landscape) {
       .game-area {
         flex-direction: row;
-        gap: 16px;
+        gap: 14px;
       }
     }
 
     /* 문제 표시 카드 */
     .question-card {
-      flex: 1.15;
+      flex: 1.25;
       min-height: 0;
       background: var(--card-bg);
-      border-radius: 26px;
+      border-radius: 24px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
-      padding: clamp(12px, 2.5vmin, 24px);
+      padding: clamp(8px, 2vmin, 18px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      position: relative;
       overflow: hidden;
+      gap: 6px;
     }
 
     .feedback-banner {
-      font-size: clamp(1rem, 2.8vmin, 1.35rem);
+      font-size: clamp(0.88rem, 2.3vmin, 1.2rem);
       font-weight: 800;
       color: var(--secondary-dark);
-      min-height: 1.5em;
+      min-height: 1.3em;
       text-align: center;
+      flex-shrink: 0;
     }
 
     /* 시각적 수세기 그림 영역 */
@@ -194,98 +200,262 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(8px, 2vmin, 20px);
-      padding: 4px;
+      gap: clamp(6px, 1.6vmin, 14px);
     }
 
+    .visual-operator {
+      font-size: clamp(1.2rem, 3.5vmin, 2rem);
+      font-weight: 900;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* 단일 수 그룹 박스 (A+B=? 에서 각 항, 또는 양변 모드에서 하위 항) */
     .item-group {
       flex: 1;
-      max-width: 45%;
-      height: 100%;
+      min-width: 0;
+      max-height: 100%;
       background: #F8FAFC;
       border: 2px dashed #CBD5E1;
-      border-radius: 18px;
-      padding: 8px;
+      border-radius: 16px;
+      padding: clamp(5px, 1.2vmin, 10px);
       display: flex;
-      flex-wrap: wrap;
-      align-content: center;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
       gap: clamp(4px, 1vmin, 8px);
       overflow: hidden;
     }
 
-    .emoji-item {
-      font-size: clamp(1.3rem, 4.2vmin, 2.4rem);
-      line-height: 1;
-      animation: popIn 0.25s ease-out;
+    .group-count-label {
+      font-size: clamp(0.7rem, 1.7vmin, 0.85rem);
+      font-weight: 800;
+      color: #64748B;
+      background: #E2E8F0;
+      padding: 1px 8px;
+      border-radius: 999px;
+      line-height: 1.3;
     }
 
+    /* 10개 묶음들을 담는 컨테이너 */
+    .bundles-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    /* 10개 묶음 상자: 내부에서 정확히 5개씩 2줄(5x2)로 줄 바꿈 */
     .ten-bundle {
+      background: #FFFBEB;
+      border: 2px solid #F59E0B;
+      border-radius: 11px;
+      padding: clamp(3px, 0.8vmin, 6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.12);
+    }
+
+    .ten-bundle-tag {
+      font-size: clamp(0.58rem, 1.3vmin, 0.72rem);
+      font-weight: 800;
+      color: #B45309;
+      background: #FDE68A;
+      padding: 0 6px;
+      border-radius: 6px;
+      line-height: 1.2;
+    }
+
+    .ten-bundle-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: clamp(1px, 0.4vmin, 3px);
+      justify-items: center;
+      align-items: center;
+    }
+
+    /* 낱개(1~9개) 그리드: 무조건 5개 단위로 줄 바꿈 */
+    .ones-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: clamp(2px, 0.7vmin, 5px);
+      justify-items: center;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 11px;
+      padding: clamp(4px, 1vmin, 8px);
+    }
+
+    /* 기본 이모지 크기 (1~9개 단일 수일 때) */
+    .ones-grid .emoji-item {
+      font-size: clamp(1.05rem, 3.2vmin, 1.85rem);
+      line-height: 1.05;
+      animation: popIn 0.22s ease-out;
+    }
+
+    /* 10개 묶음 안의 이모지 크기 (약간 작게 하여 10개가 한눈에 들어오도록) */
+    .ten-bundle-grid .emoji-item {
+      font-size: clamp(0.76rem, 2.1vmin, 1.25rem);
+      line-height: 1.05;
+      animation: popIn 0.22s ease-out;
+    }
+
+    /* 10 이상인 그룹에서는 낱개 크기도 10묶음과 조화롭게 축소 */
+    .item-group.has-tens .ones-grid .emoji-item {
+      font-size: clamp(0.76rem, 2.1vmin, 1.25rem);
+    }
+
+    .empty-slot-dot {
+      width: clamp(5px, 1vmin, 8px);
+      height: clamp(5px, 1vmin, 8px);
+      border-radius: 50%;
+      background: #E2E8F0;
+    }
+
+    /* 양변 덧셈(3+5=2+?) 전용 레이아웃 */
+    .balance-side {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      background: #F8FAFC;
+      border: 2px dashed #CBD5E1;
+      border-radius: 16px;
+      padding: clamp(4px, 1vmin, 8px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    .balance-side-title {
+      font-size: clamp(0.72rem, 1.8vmin, 0.9rem);
+      font-weight: 800;
+      color: var(--text-sub);
+      background: #E2E8F0;
+      padding: 2px 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .balance-subgroups {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .balance-sub-item {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .balance-plus {
+      font-size: clamp(0.85rem, 2vmin, 1.15rem);
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    /* 양변 모드에서는 좌우에 각각 두 수가 들어가므로 크기를 한 단계 컴팩트하게 조정 */
+    .visual-box.balance-mode .ones-grid {
+      padding: clamp(2px, 0.6vmin, 5px) clamp(4px, 0.9vmin, 7px);
+      gap: clamp(1px, 0.4vmin, 3px);
+    }
+
+    .visual-box.balance-mode .ones-grid .emoji-item {
+      font-size: clamp(0.78rem, 2.2vmin, 1.25rem);
+    }
+
+    .visual-box.balance-mode .ten-bundle {
+      padding: 2px 4px;
+    }
+
+    .visual-box.balance-mode .ten-bundle-grid .emoji-item {
+      font-size: clamp(0.62rem, 1.7vmin, 0.98rem);
+    }
+
+    .mystery-visual-box {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: #FEF3C7;
-      border: 2px solid #F59E0B;
-      border-radius: 10px;
-      padding: 2px 6px;
-      font-size: clamp(0.85rem, 2.5vmin, 1.2rem);
-      font-weight: 800;
-      color: #B45309;
-    }
-
-    .plus-sign-visual {
-      font-size: clamp(1.4rem, 4vmin, 2.2rem);
+      min-width: clamp(56px, 13vmin, 96px);
+      padding: clamp(4px, 1vmin, 8px) 12px;
+      border-radius: 12px;
+      background: #FFF3B0;
+      border: 2px dashed var(--primary);
+      color: var(--primary-dark);
+      font-size: clamp(1rem, 2.8vmin, 1.5rem);
       font-weight: 900;
-      color: var(--primary);
     }
 
-    /* 수식 영역 */
+    /* 하단 수식 영역 */
     .equation-box {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(8px, 2.2vmin, 18px);
-      font-size: clamp(2.2rem, 8vmin, 4.2rem);
+      flex-wrap: nowrap;
+      gap: clamp(6px, 1.8vmin, 14px);
+      font-size: clamp(1.9rem, 6.8vmin, 3.6rem);
       font-weight: 900;
-      padding-top: 4px;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .equation-box.balance-eq {
+      font-size: clamp(1.45rem, 5.2vmin, 2.8rem);
+      gap: clamp(4px, 1.4vmin, 10px);
     }
 
     .answer-slot {
-      min-width: clamp(64px, 15vmin, 110px);
-      padding: 2px 14px;
-      border-radius: 18px;
+      min-width: clamp(54px, 13vmin, 98px);
+      padding: 2px 10px;
+      border-radius: 16px;
       background: #FFF3B0;
       border: 3px solid var(--primary);
       color: var(--primary-dark);
       text-align: center;
     }
 
-    /* 답안 입력 영역 */
+    /* 답안 입력 패널 */
     .answer-panel {
-      flex: 1;
+      flex: 0.95;
       min-height: 0;
       display: flex;
       flex-direction: column;
     }
 
-    /* 4지선다 보기 그리드 */
     .choices-grid {
       flex: 1;
       min-height: 0;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: clamp(10px, 2vmin, 16px);
+      gap: clamp(8px, 1.8vmin, 14px);
     }
 
     .choice-btn {
       border: none;
-      border-radius: 24px;
+      border-radius: 22px;
       background: var(--secondary);
       color: #FFFFFF;
-      font-size: clamp(2rem, 7vmin, 3.4rem);
+      font-size: clamp(1.8rem, 6.5vmin, 3.2rem);
       font-weight: 900;
-      box-shadow: 0 6px 0 var(--secondary-dark);
+      box-shadow: 0 5px 0 var(--secondary-dark);
       cursor: pointer;
       transition: transform 0.1s, opacity 0.2s, background 0.2s;
       display: flex;
@@ -294,7 +464,7 @@
     }
 
     .choice-btn:active {
-      transform: translateY(4px);
+      transform: translateY(3px);
       box-shadow: 0 2px 0 var(--secondary-dark);
     }
 
@@ -308,26 +478,25 @@
 
     .choice-btn.correct {
       background: #FF9F1C;
-      box-shadow: 0 6px 0 #E07A00;
+      box-shadow: 0 5px 0 #E07A00;
       animation: bounce 0.4s ease;
     }
 
-    /* 직접 입력 숫자 키패드 그리드 */
     .keypad-grid {
       flex: 1;
       min-height: 0;
       display: none;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(4, 1fr);
-      gap: clamp(6px, 1.5vmin, 12px);
+      gap: clamp(6px, 1.4vmin, 10px);
     }
 
     .key-btn {
       border: none;
-      border-radius: 16px;
+      border-radius: 14px;
       background: #FFFFFF;
       color: var(--text-main);
-      font-size: clamp(1.3rem, 4.5vmin, 2.2rem);
+      font-size: clamp(1.25rem, 4.2vmin, 2rem);
       font-weight: 800;
       box-shadow: 0 4px 0 #CBD5E1;
       cursor: pointer;
@@ -365,7 +534,7 @@
     .modal-card {
       background: #FFFFFF;
       border-radius: 28px;
-      padding: 28px 24px;
+      padding: 26px 22px;
       max-width: 380px;
       width: 100%;
       text-align: center;
@@ -374,15 +543,15 @@
     }
 
     .modal-card h2 {
-      font-size: 1.8rem;
+      font-size: 1.75rem;
       margin-bottom: 8px;
       color: var(--primary-dark);
     }
 
     .modal-card p {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--text-sub);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       font-weight: 600;
     }
 
@@ -391,9 +560,9 @@
       border-radius: 16px;
       background: var(--secondary);
       color: #FFF;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      padding: 12px 28px;
+      padding: 12px 26px;
       box-shadow: 0 5px 0 var(--secondary-dark);
       cursor: pointer;
     }
@@ -426,6 +595,7 @@
         <button class="level-btn active" data-level="1">1단계</button>
         <button class="level-btn" data-level="2">2단계</button>
         <button class="level-btn" data-level="3">3단계</button>
+        <button class="type-btn" id="typeToggle">유형: 골고루</button>
         <button class="mode-btn" id="modeToggle">보기 모드</button>
         <button class="sound-btn" id="soundToggle" aria-label="소리 켜기/끄기">🔊</button>
       </div>
@@ -435,24 +605,14 @@
     </header>
 
     <main class="game-area">
-      <!-- 문제 및 수세기 시각 영역 -->
+      <!-- 문제 및 5단위 수세기 시각 영역 -->
       <section class="question-card">
-        <div class="feedback-banner" id="feedbackText">그림을 세어 보고 정답을 찾아보세요!</div>
-        <div class="visual-box">
-          <div class="item-group" id="leftVisual"></div>
-          <div class="plus-sign-visual">+</div>
-          <div class="item-group" id="rightVisual"></div>
-        </div>
-        <div class="equation-box">
-          <span id="numA">3</span>
-          <span>+</span>
-          <span id="numB">2</span>
-          <span>=</span>
-          <span class="answer-slot" id="answerSlot">?</span>
-        </div>
+        <div class="feedback-banner" id="feedbackText">5개씩 줄 지어 있는 그림을 세어 보세요!</div>
+        <div class="visual-box" id="visualBox"></div>
+        <div class="equation-box" id="equationBox"></div>
       </section>
 
-      <!-- 정답 선택 영역 (4지선다 / 키패드 전환 가능) -->
+      <!-- 정답 선택 영역 -->
       <section class="answer-panel">
         <div class="choices-grid" id="choicesGrid"></div>
         <div class="keypad-grid" id="keypadGrid">
@@ -476,7 +636,7 @@
   <!-- 10문제 달성 축하 모달 -->
   <div class="modal-overlay" id="celebrationModal">
     <div class="modal-card">
-      <div style="font-size: 3.4rem; margin-bottom: 8px;">🎉🌟🎉</div>
+      <div style="font-size: 3.2rem; margin-bottom: 8px;">🎉🌟🎉</div>
       <h2>우와! 멋져요!</h2>
       <p id="modalMessage">차근차근 생각해서 벌써 10문제를 풀었어요!</p>
       <button class="modal-btn" id="continueBtn">계속 놀이하기</button>
@@ -484,32 +644,37 @@
   </div>
 
   <script>
-    // 화면 바운스 및 핀치 줌 방지
+    // 멀티터치 줌 방지
     document.addEventListener('touchmove', (e) => {
       if (e.touches.length > 1) e.preventDefault();
     }, { passive: false });
 
-    // 상태 관리
     const EMOJIS = ['🍎', '🍓', '🍊', '🍌', '🍇', '🐶', '🐱', '🐰', '🐥', '🐢', '🚗', '🎈'];
+
+    // 상태 변수
     let level = 1;
+    // questionTypeFilter: 'mixed' (골고루) | 'balance' (3+5=2+?) | 'basic' (3+2=?)
+    let questionTypeFilter = 'mixed';
+    let currentProblemType = 'balance'; // 첫 문제에서 바로 확인하실 수 있도록 시작 시 적용
     let isKeypadMode = false;
     let soundEnabled = true;
     let stars = Number(localStorage.getItem('addition_stars') || 0);
-    let currentA = 0;
-    let currentB = 0;
-    let correctAnswer = 0;
+
+    let currentA = 3;
+    let currentB = 5;
+    let currentC = 2;
+    let correctAnswer = 6;
+    let currentEmoji = '🍎';
     let typedInput = '';
     let isLocked = false;
 
     const starCountEl = document.getElementById('starCount');
     const feedbackTextEl = document.getElementById('feedbackText');
-    const leftVisualEl = document.getElementById('leftVisual');
-    const rightVisualEl = document.getElementById('rightVisual');
-    const numAEl = document.getElementById('numA');
-    const numBEl = document.getElementById('numB');
-    const answerSlotEl = document.getElementById('answerSlot');
+    const visualBoxEl = document.getElementById('visualBox');
+    const equationBoxEl = document.getElementById('equationBox');
     const choicesGridEl = document.getElementById('choicesGrid');
     const keypadGridEl = document.getElementById('keypadGrid');
+    const typeToggleBtn = document.getElementById('typeToggle');
     const modeToggleBtn = document.getElementById('modeToggle');
     const soundToggleBtn = document.getElementById('soundToggle');
     const celebrationModal = document.getElementById('celebrationModal');
@@ -517,7 +682,7 @@
 
     starCountEl.textContent = stars;
 
-    // Web Audio API 효과음 (외부 오디오 파일 불필요)
+    // 효과음 합성 (Web Audio API)
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -548,7 +713,7 @@
           osc.frequency.setValueAtTime(240, now);
           osc.frequency.linearRampToValueAtTime(180, now + 0.2);
           gain.gain.setValueAtTime(0.15, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.22);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start(now);
@@ -557,60 +722,236 @@
       } catch (e) {}
     }
 
-    // 시각적 아이콘 렌더링 (10개 단위는 묶음 배지로 표현해 화면 넘침 방지)
-    function renderVisualGroup(container, count, emoji) {
-      container.innerHTML = '';
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /**
+     * 5개 단위 줄 바꿈 & 10개 묶음 내부 10개 전체 표시(5x2) DOM 생성 함수
+     */
+    function createCountNode(count, emoji) {
       const tens = Math.floor(count / 10);
       const ones = count % 10;
 
-      for (let i = 0; i < tens; i++) {
-        const bundle = document.createElement('div');
-        bundle.className = 'ten-bundle';
-        bundle.textContent = `${emoji}×10`;
-        container.appendChild(bundle);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'bundles-wrap';
+
+      // 1) 10개 묶음: 상자 안에 실제 아이콘 10개를 5개씩 2줄(5x2)로 배치
+      for (let t = 0; t < tens; t++) {
+        const bundleBox = document.createElement('div');
+        bundleBox.className = 'ten-bundle';
+
+        const tag = document.createElement('span');
+        tag.className = 'ten-bundle-tag';
+        tag.textContent = '10묶음';
+        bundleBox.appendChild(tag);
+
+        const grid10 = document.createElement('div');
+        grid10.className = 'ten-bundle-grid';
+        for (let i = 0; i < 10; i++) {
+          const item = document.createElement('span');
+          item.className = 'emoji-item';
+          item.textContent = emoji;
+          grid10.appendChild(item);
+        }
+        bundleBox.appendChild(grid10);
+        wrapper.appendChild(bundleBox);
       }
-      for (let i = 0; i < ones; i++) {
-        const span = document.createElement('span');
-        span.className = 'emoji-item';
-        span.textContent = emoji;
-        container.appendChild(span);
+
+      // 2) 낱개(1~9개): 5열 그리드(repeat(5, 1fr))에 배치하여 5개 단위로 정확히 줄 바꿈
+      if (ones > 0) {
+        const onesGrid = document.createElement('div');
+        onesGrid.className = 'ones-grid';
+
+        // 5개 단위의 기준틀(5칸 또는 10칸)을 유지하기 위해 빈 칸은 은은한 점으로 채움
+        const totalSlots = ones <= 5 ? 5 : 10;
+        for (let i = 0; i < totalSlots; i++) {
+          if (i < ones) {
+            const item = document.createElement('span');
+            item.className = 'emoji-item';
+            item.textContent = emoji;
+            onesGrid.appendChild(item);
+          } else {
+            const dot = document.createElement('span');
+            dot.className = 'empty-slot-dot';
+            onesGrid.appendChild(dot);
+          }
+        }
+        wrapper.appendChild(onesGrid);
       }
+
+      return wrapper;
     }
 
-    function randInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    // 시각 영역 및 수식 렌더링
+    function renderProblemView(revealAnswer = false) {
+      visualBoxEl.innerHTML = '';
+      equationBoxEl.innerHTML = '';
+
+      if (currentProblemType === 'basic') {
+        // [기본형] A + B = ?
+        visualBoxEl.classList.remove('balance-mode');
+        equationBoxEl.classList.remove('balance-eq');
+
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'item-group' + (currentA >= 10 ? ' has-tens' : '');
+        leftGroup.innerHTML = `<span class="group-count-label">${currentA}개</span>`;
+        leftGroup.appendChild(createCountNode(currentA, currentEmoji));
+
+        const op = document.createElement('div');
+        op.className = 'visual-operator';
+        op.textContent = '+';
+
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'item-group' + (currentB >= 10 ? ' has-tens' : '');
+        rightGroup.innerHTML = `<span class="group-count-label">${currentB}개</span>`;
+        rightGroup.appendChild(createCountNode(currentB, currentEmoji));
+
+        visualBoxEl.append(leftGroup, op, rightGroup);
+
+        equationBoxEl.innerHTML = `
+          <span>${currentA}</span>
+          <span>+</span>
+          <span>${currentB}</span>
+          <span>=</span>
+          <span class="answer-slot" id="answerSlot">${revealAnswer ? correctAnswer : (typedInput || '?')}</span>
+        `;
+      } else {
+        // [양변 균형형] A + B = C + ? (예: 3 + 5 = 2 + ?)
+        visualBoxEl.classList.add('balance-mode');
+        equationBoxEl.classList.add('balance-eq');
+
+        const sumTotal = currentA + currentB;
+
+        // 왼쪽 변 (A + B)
+        const leftSide = document.createElement('div');
+        leftSide.className = 'balance-side';
+        leftSide.innerHTML = `<div class="balance-side-title">왼쪽: ${currentA} + ${currentB} (합 ${sumTotal})</div>`;
+
+        const leftSub = document.createElement('div');
+        leftSub.className = 'balance-subgroups';
+
+        const subA = document.createElement('div');
+        subA.className = 'balance-sub-item';
+        subA.appendChild(createCountNode(currentA, currentEmoji));
+
+        const plusL = document.createElement('div');
+        plusL.className = 'balance-plus';
+        plusL.textContent = '+';
+
+        const subB = document.createElement('div');
+        subB.className = 'balance-sub-item';
+        subB.appendChild(createCountNode(currentB, currentEmoji));
+
+        leftSub.append(subA, plusL, subB);
+        leftSide.appendChild(leftSub);
+
+        // 가운데 등호(=)
+        const eqSign = document.createElement('div');
+        eqSign.className = 'visual-operator';
+        eqSign.textContent = '=';
+
+        // 오른쪽 변 (C + ?)
+        const rightSide = document.createElement('div');
+        rightSide.className = 'balance-side';
+        rightSide.innerHTML = `<div class="balance-side-title">오른쪽: ${currentC} + ${revealAnswer ? correctAnswer : '?'}</div>`;
+
+        const rightSub = document.createElement('div');
+        rightSub.className = 'balance-subgroups';
+
+        const subC = document.createElement('div');
+        subC.className = 'balance-sub-item';
+        subC.appendChild(createCountNode(currentC, currentEmoji));
+
+        const plusR = document.createElement('div');
+        plusR.className = 'balance-plus';
+        plusR.textContent = '+';
+
+        const subD = document.createElement('div');
+        subD.className = 'balance-sub-item';
+        if (revealAnswer) {
+          subD.appendChild(createCountNode(correctAnswer, currentEmoji));
+        } else {
+          const mystery = document.createElement('div');
+          mystery.className = 'mystery-visual-box';
+          mystery.textContent = '? 개';
+          subD.appendChild(mystery);
+        }
+
+        rightSub.append(subC, plusR, subD);
+        rightSide.appendChild(rightSub);
+
+        visualBoxEl.append(leftSide, eqSign, rightSide);
+
+        equationBoxEl.innerHTML = `
+          <span>${currentA}</span>
+          <span>+</span>
+          <span>${currentB}</span>
+          <span>=</span>
+          <span>${currentC}</span>
+          <span>+</span>
+          <span class="answer-slot" id="answerSlot">${revealAnswer ? correctAnswer : (typedInput || '?')}</span>
+        `;
+      }
     }
 
     // 새 문제 생성
     function generateQuestion() {
       isLocked = false;
       typedInput = '';
-      answerSlotEl.textContent = '?';
-      feedbackTextEl.textContent = '천천히 세어 보고 알맞은 숫자를 눌러 보세요!';
-      feedbackTextEl.style.color = '#5C677D';
+      currentEmoji = EMOJIS[randInt(0, EMOJIS.length - 1)];
+
+      // 문제 유형 결정
+      if (questionTypeFilter === 'basic') {
+        currentProblemType = 'basic';
+      } else if (questionTypeFilter === 'balance') {
+        currentProblemType = 'balance';
+      } else {
+        // 골고루 모드: 번갈아 가며 출제
+        currentProblemType = currentProblemType === 'basic' ? 'balance' : 'basic';
+      }
 
       if (level === 1) {
         // 1단계: 합이 10 이하
-        currentA = randInt(1, 5);
-        currentB = randInt(1, 10 - currentA);
+        currentA = randInt(2, 5);
+        currentB = randInt(2, 10 - currentA);
       } else if (level === 2) {
-        // 2단계: 한 자리 수 + 한 자리 수 (받아올림 포함, 합 20 이하)
-        currentA = randInt(3, 9);
+        // 2단계: 한 자리 + 한 자리 (합 20 이하)
+        currentA = randInt(4, 9);
         currentB = randInt(3, 9);
       } else {
-        // 3단계: 두 자리 수 + 한 자리 수
-        currentA = randInt(10, 25);
-        currentB = randInt(2, 9);
+        // 3단계: 두 자리(10묶음 포함) + 한 자리
+        currentA = randInt(11, 22);
+        currentB = randInt(2, 8);
       }
 
-      correctAnswer = currentA + currentB;
-      numAEl.textContent = currentA;
-      numBEl.textContent = currentB;
+      const sumTotal = currentA + currentB;
 
-      const emoji = EMOJIS[randInt(0, EMOJIS.length - 1)];
-      renderVisualGroup(leftVisualEl, currentA, emoji);
-      renderVisualGroup(rightVisualEl, currentB, emoji);
+      if (currentProblemType === 'basic') {
+        correctAnswer = sumTotal;
+        feedbackTextEl.textContent = '5개씩 줄 지어 있는 그림을 세어 보고 합을 구해 보세요!';
+      } else {
+        // A + B = C + ? (양쪽이 같아지는 수 찾기)
+        // C는 1 이상 (sumTotal - 1) 이하이면서 가급적 A, B와 다른 수로 설정
+        const candidates = [];
+        const maxC = level === 3 ? sumTotal - 2 : Math.min(9, sumTotal - 1);
+        const minC = level === 3 ? Math.max(10, sumTotal - 12) : Math.max(1, sumTotal - 9);
 
+        for (let c = minC; c <= maxC; c++) {
+          if (c !== currentA && c !== currentB) {
+            candidates.push(c);
+          }
+        }
+        currentC = candidates.length > 0
+          ? candidates[randInt(0, candidates.length - 1)]
+          : randInt(1, sumTotal - 1);
+
+        correctAnswer = sumTotal - currentC;
+        feedbackTextEl.textContent = `왼쪽 합은 ${sumTotal}개예요! 오른쪽 ${currentC}개에 몇 개를 더하면 같아질까요?`;
+      }
+
+      feedbackTextEl.style.color = '#5C677D';
+      renderProblemView(false);
       renderChoices();
     }
 
@@ -644,16 +985,20 @@
 
       if (Number(selectedValue) === correctAnswer) {
         isLocked = true;
-        answerSlotEl.textContent = correctAnswer;
+        renderProblemView(true);
         if (buttonEl) buttonEl.classList.add('correct');
         playTone('correct');
 
-        const praises = [
-          '정답이에요! 끝까지 잘 세어 보았네요!',
-          '우와, 정확해요! 계산 실력이 쑥쑥 자라요!',
-          '딩동댕! 스스로 힘을 내서 맞혔어요!'
-        ];
-        feedbackTextEl.textContent = praises[randInt(0, praises.length - 1)];
+        if (currentProblemType === 'balance') {
+          feedbackTextEl.textContent = `정답이에요! 양쪽 모두 ${currentA + currentB}개로 똑같아졌어요!`;
+        } else {
+          const praises = [
+            '정답이에요! 5개씩 묶어 세니 정말 빠르네요!',
+            '우와, 정확해요! 계산 실력이 쑥쑥 자라요!',
+            '딩동댕! 스스로 힘을 내서 맞혔어요!'
+          ];
+          feedbackTextEl.textContent = praises[randInt(0, praises.length - 1)];
+        }
         feedbackTextEl.style.color = '#1B998B';
 
         stars += 1;
@@ -667,14 +1012,15 @@
           } else {
             generateQuestion();
           }
-        }, 900);
+        }, 1100);
       } else {
         playTone('wrong');
         if (buttonEl) buttonEl.classList.add('wrong');
-        feedbackTextEl.textContent = '아하! 그림을 한 번 더 천천히 세어 볼까요?';
+        feedbackTextEl.textContent = '아하! 5개씩 줄 지어 있는 그림을 한 번 더 세어 볼까요?';
         feedbackTextEl.style.color = '#E07A00';
         typedInput = '';
-        if (isKeypadMode) answerSlotEl.textContent = '?';
+        const slot = document.getElementById('answerSlot');
+        if (isKeypadMode && slot) slot.textContent = '?';
       }
     }
 
@@ -688,6 +1034,21 @@
       });
     });
 
+    // 문제 유형 전환 (골고루 -> A+B=C+? -> A+B=?)
+    typeToggleBtn.addEventListener('click', () => {
+      if (questionTypeFilter === 'mixed') {
+        questionTypeFilter = 'balance';
+        typeToggleBtn.textContent = '유형: A+B=C+?';
+      } else if (questionTypeFilter === 'balance') {
+        questionTypeFilter = 'basic';
+        typeToggleBtn.textContent = '유형: A+B=?';
+      } else {
+        questionTypeFilter = 'mixed';
+        typeToggleBtn.textContent = '유형: 골고루';
+      }
+      generateQuestion();
+    });
+
     // 보기 모드 / 키패드 모드 전환
     modeToggleBtn.addEventListener('click', () => {
       isKeypadMode = !isKeypadMode;
@@ -695,7 +1056,8 @@
       choicesGridEl.style.display = isKeypadMode ? 'none' : 'grid';
       keypadGridEl.style.display = isKeypadMode ? 'grid' : 'none';
       typedInput = '';
-      answerSlotEl.textContent = '?';
+      const slot = document.getElementById('answerSlot');
+      if (slot) slot.textContent = '?';
     });
 
     // 소리 켜기/끄기
@@ -709,15 +1071,16 @@
       btn.addEventListener('click', () => {
         if (isLocked) return;
         const key = btn.dataset.key;
+        const slot = document.getElementById('answerSlot');
         if (key === 'clear') {
           typedInput = '';
-          answerSlotEl.textContent = '?';
+          if (slot) slot.textContent = '?';
         } else if (key === 'submit') {
           if (typedInput !== '') checkAnswer(Number(typedInput));
         } else {
           if (typedInput.length < 3) {
             typedInput += key;
-            answerSlotEl.textContent = typedInput;
+            if (slot) slot.textContent = typedInput;
           }
         }
       });
@@ -728,17 +1091,16 @@
       generateQuestion();
     });
 
-    // 초기 실행
+    // 첫 문제 시작 (첫 화면에서 3+5=2+? 유형이 바로 보이도록 currentProblemType 초기값 설정)
+    currentProblemType = 'basic'; // generateQuestion 내부에서 'balance'로 전환됨
     generateQuestion();
 
-    // 서비스 워커 등록 (updateViaCache: 'none'으로 코드 업데이트 지연 방지)
+    // 서비스 워커 등록
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker
           .register('./sw.js', { updateViaCache: 'none' })
-          .then((reg) => {
-            reg.update();
-          })
+          .then((reg) => reg.update())
           .catch(() => {});
       });
     }
