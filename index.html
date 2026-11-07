@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>신나는 덧셈 놀이터</title>
+
+  <!-- PWA 및 모바일 전체화면 앱 설정 -->
+  <meta name="theme-color" content="#FFF3B0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="덧셈놀이터">
+
+  <!-- 아이콘 및 매니페스트 연결 (icon.ico, icon.png 반영) -->
+  <link rel="icon" href="./icon.ico" sizes="any">
+  <link rel="icon" href="./icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icon.png">
+  <link rel="manifest" href="./manifest.json">
+
+  <style>
+    :root {
+      --bg-top: #FFF8D6;
+      --bg-bottom: #FDE2E4;
+      --card-bg: #FFFFFF;
+      --primary: #FF9F1C;
+      --primary-dark: #E07A00;
+      --secondary: #2EC4B6;
+      --secondary-dark: #1B998B;
+      --accent: #FF6B6B;
+      --text-main: #2B2D42;
+      --text-sub: #5C677D;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      position: fixed;
+      inset: 0;
+      overscroll-behavior: none;
+      touch-action: none;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      color: var(--text-main);
+    }
+
+    /* 전체 앱 컨테이너 (노치 및 홈바 안전 영역 대응) */
+    #app {
+      width: 100%;
+      height: 100dvh;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding:
+        max(10px, env(safe-area-inset-top))
+        max(14px, env(safe-area-inset-right))
+        max(12px, env(safe-area-inset-bottom))
+        max(14px, env(safe-area-inset-left));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 상단 컨트롤 바 */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 8px 12px;
+      border-radius: 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: clamp(0.95rem, 2.5vmin, 1.25rem);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .brand img {
+      width: clamp(24px, 4vmin, 32px);
+      height: clamp(24px, 4vmin, 32px);
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .level-btn, .mode-btn, .sound-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 6px 10px;
+      font-size: clamp(0.75rem, 2vmin, 0.95rem);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+      background: #EDF2F4;
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .level-btn.active {
+      background: var(--primary);
+      color: #FFF;
+      box-shadow: 0 3px 0 var(--primary-dark);
+    }
+
+    .mode-btn {
+      background: #E0FBF8;
+      color: #0F766E;
+    }
+
+    .score-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #FFF3B0;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: clamp(0.85rem, 2.2vmin, 1.1rem);
+      color: #B45309;
+      white-space: nowrap;
+    }
+
+    /* 메인 게임 영역 (세로 모드: 상하 배치 / 가로 모드: 좌우 배치) */
+    .game-area {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (orientation: landscape) {
+      .game-area {
+        flex-direction: row;
+        gap: 16px;
+      }
+    }
+
+    /* 문제 표시 카드 */
+    .question-card {
+      flex: 1.15;
+      min-height: 0;
+      background: var(--card-bg);
+      border-radius: 26px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+      padding: clamp(12px, 2.5vmin, 24px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feedback-banner {
+      font-size: clamp(1rem, 2.8vmin, 1.35rem);
+      font-weight: 800;
+      color: var(--secondary-dark);
+      min-height: 1.5em;
+      text-align: center;
+    }
+
+    /* 시각적 수세기 그림 영역 */
+    .visual-box {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 2vmin, 20px);
+      padding: 4px;
+    }
+
+    .item-group {
+      flex: 1;
+      max-width: 45%;
+      height: 100%;
+      background: #F8FAFC;
+      border: 2px dashed #CBD5E1;
+      border-radius: 18px;
+      padding: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: center;
+      gap: clamp(4px, 1vmin, 8px);
+      overflow: hidden;
+    }
+
+    .emoji-item {
+      font-size: clamp(1.3rem, 4.2vmin, 2.4rem);
+      line-height: 1;
+      animation: popIn 0.25s ease-out;
+    }
+
+    .ten-bundle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #FEF3C7;
+      border: 2px solid #F59E0B;
+      border-radius: 10px;
+      padding: 2px 6px;
+      font-size: clamp(0.85rem, 2.5vmin, 1.2rem);
+      font-weight: 800;
+      color: #B45309;
+    }
+
+    .plus-sign-visual {
+      font-size: clamp(1.4rem, 4vmin, 2.2rem);
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    /* 수식 영역 */
+    .equation-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 2.2vmin, 18px);
+      font-size: clamp(2.2rem, 8vmin, 4.2rem);
+      font-weight: 900;
+      padding-top: 4px;
+    }
+
+    .answer-slot {
+      min-width: clamp(64px, 15vmin, 110px);
+      padding: 2px 14px;
+      border-radius: 18px;
+      background: #FFF3B0;
+      border: 3px solid var(--primary);
+      color: var(--primary-dark);
+      text-align: center;
+    }
+
+    /* 답안 입력 영역 */
+    .answer-panel {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 4지선다 보기 그리드 */
+    .choices-grid {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: clamp(10px, 2vmin, 16px);
+    }
+
+    .choice-btn {
+      border: none;
+      border-radius: 24px;
+      background: var(--secondary);
+      color: #FFFFFF;
+      font-size: clamp(2rem, 7vmin, 3.4rem);
+      font-weight: 900;
+      box-shadow: 0 6px 0 var(--secondary-dark);
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s, background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .choice-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--secondary-dark);
+    }
+
+    .choice-btn.wrong {
+      background: #CBD5E1;
+      box-shadow: 0 4px 0 #94A3B8;
+      opacity: 0.55;
+      pointer-events: none;
+      animation: shake 0.35s ease;
+    }
+
+    .choice-btn.correct {
+      background: #FF9F1C;
+      box-shadow: 0 6px 0 #E07A00;
+      animation: bounce 0.4s ease;
+    }
+
+    /* 직접 입력 숫자 키패드 그리드 */
+    .keypad-grid {
+      flex: 1;
+      min-height: 0;
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: clamp(6px, 1.5vmin, 12px);
+    }
+
+    .key-btn {
+      border: none;
+      border-radius: 16px;
+      background: #FFFFFF;
+      color: var(--text-main);
+      font-size: clamp(1.3rem, 4.5vmin, 2.2rem);
+      font-weight: 800;
+      box-shadow: 0 4px 0 #CBD5E1;
+      cursor: pointer;
+    }
+
+    .key-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #CBD5E1;
+    }
+
+    .key-btn.clear {
+      background: #FFE5E5;
+      color: #E11D48;
+      box-shadow: 0 4px 0 #FDA4AF;
+    }
+
+    .key-btn.submit {
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 0 var(--primary-dark);
+    }
+
+    /* 칭찬 모달 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+      animation: popIn 0.3s ease-out;
+    }
+
+    .modal-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--primary-dark);
+    }
+
+    .modal-card p {
+      font-size: 1.1rem;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .modal-btn {
+      border: none;
+      border-radius: 16px;
+      background: var(--secondary);
+      color: #FFF;
+      font-size: 1.25rem;
+      font-weight: 800;
+      padding: 12px 28px;
+      box-shadow: 0 5px 0 var(--secondary-dark);
+      cursor: pointer;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="top-bar">
+      <div class="brand">
+        <img src="./icon.png" alt="아이콘" onerror="this.style.display='none'">
+        <span>덧셈 놀이터</span>
+      </div>
+      <div class="controls">
+        <button class="level-btn active" data-level="1">1단계</button>
+        <button class="level-btn" data-level="2">2단계</button>
+        <button class="level-btn" data-level="3">3단계</button>
+        <button class="mode-btn" id="modeToggle">보기 모드</button>
+        <button class="sound-btn" id="soundToggle" aria-label="소리 켜기/끄기">🔊</button>
+      </div>
+      <div class="score-badge">
+        ⭐ <span id="starCount">0</span>
+      </div>
+    </header>
+
+    <main class="game-area">
+      <!-- 문제 및 수세기 시각 영역 -->
+      <section class="question-card">
+        <div class="feedback-banner" id="feedbackText">그림을 세어 보고 정답을 찾아보세요!</div>
+        <div class="visual-box">
+          <div class="item-group" id="leftVisual"></div>
+          <div class="plus-sign-visual">+</div>
+          <div class="item-group" id="rightVisual"></div>
+        </div>
+        <div class="equation-box">
+          <span id="numA">3</span>
+          <span>+</span>
+          <span id="numB">2</span>
+          <span>=</span>
+          <span class="answer-slot" id="answerSlot">?</span>
+        </div>
+      </section>
+
+      <!-- 정답 선택 영역 (4지선다 / 키패드 전환 가능) -->
+      <section class="answer-panel">
+        <div class="choices-grid" id="choicesGrid"></div>
+        <div class="keypad-grid" id="keypadGrid">
+          <button class="key-btn" data-key="1">1</button>
+          <button class="key-btn" data-key="2">2</button>
+          <button class="key-btn" data-key="3">3</button>
+          <button class="key-btn" data-key="4">4</button>
+          <button class="key-btn" data-key="5">5</button>
+          <button class="key-btn" data-key="6">6</button>
+          <button class="key-btn" data-key="7">7</button>
+          <button class="key-btn" data-key="8">8</button>
+          <button class="key-btn" data-key="9">9</button>
+          <button class="key-btn clear" data-key="clear">지우기</button>
+          <button class="key-btn" data-key="0">0</button>
+          <button class="key-btn submit" data-key="submit">확인</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 10문제 달성 축하 모달 -->
+  <div class="modal-overlay" id="celebrationModal">
+    <div class="modal-card">
+      <div style="font-size: 3.4rem; margin-bottom: 8px;">🎉🌟🎉</div>
+      <h2>우와! 멋져요!</h2>
+      <p id="modalMessage">차근차근 생각해서 벌써 10문제를 풀었어요!</p>
+      <button class="modal-btn" id="continueBtn">계속 놀이하기</button>
+    </div>
+  </div>
+
+  <script>
+    // 화면 바운스 및 핀치 줌 방지
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+
+    // 상태 관리
+    const EMOJIS = ['🍎', '🍓', '🍊', '🍌', '🍇', '🐶', '🐱', '🐰', '🐥', '🐢', '🚗', '🎈'];
+    let level = 1;
+    let isKeypadMode = false;
+    let soundEnabled = true;
+    let stars = Number(localStorage.getItem('addition_stars') || 0);
+    let currentA = 0;
+    let currentB = 0;
+    let correctAnswer = 0;
+    let typedInput = '';
+    let isLocked = false;
+
+    const starCountEl = document.getElementById('starCount');
+    const feedbackTextEl = document.getElementById('feedbackText');
+    const leftVisualEl = document.getElementById('leftVisual');
+    const rightVisualEl = document.getElementById('rightVisual');
+    const numAEl = document.getElementById('numA');
+    const numBEl = document.getElementById('numB');
+    const answerSlotEl = document.getElementById('answerSlot');
+    const choicesGridEl = document.getElementById('choicesGrid');
+    const keypadGridEl = document.getElementById('keypadGrid');
+    const modeToggleBtn = document.getElementById('modeToggle');
+    const soundToggleBtn = document.getElementById('soundToggle');
+    const celebrationModal = document.getElementById('celebrationModal');
+    const modalMessage = document.getElementById('modalMessage');
+
+    starCountEl.textContent = stars;
+
+    // Web Audio API 효과음 (외부 오디오 파일 불필요)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playTone(type) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        if (type === 'correct') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.18, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.22);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.24);
+          });
+        } else if (type === 'wrong') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.linearRampToValueAtTime(180, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.24);
+        }
+      } catch (e) {}
+    }
+
+    // 시각적 아이콘 렌더링 (10개 단위는 묶음 배지로 표현해 화면 넘침 방지)
+    function renderVisualGroup(container, count, emoji) {
+      container.innerHTML = '';
+      const tens = Math.floor(count / 10);
+      const ones = count % 10;
+
+      for (let i = 0; i < tens; i++) {
+        const bundle = document.createElement('div');
+        bundle.className = 'ten-bundle';
+        bundle.textContent = `${emoji}×10`;
+        container.appendChild(bundle);
+      }
+      for (let i = 0; i < ones; i++) {
+        const span = document.createElement('span');
+        span.className = 'emoji-item';
+        span.textContent = emoji;
+        container.appendChild(span);
+      }
+    }
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // 새 문제 생성
+    function generateQuestion() {
+      isLocked = false;
+      typedInput = '';
+      answerSlotEl.textContent = '?';
+      feedbackTextEl.textContent = '천천히 세어 보고 알맞은 숫자를 눌러 보세요!';
+      feedbackTextEl.style.color = '#5C677D';
+
+      if (level === 1) {
+        // 1단계: 합이 10 이하
+        currentA = randInt(1, 5);
+        currentB = randInt(1, 10 - currentA);
+      } else if (level === 2) {
+        // 2단계: 한 자리 수 + 한 자리 수 (받아올림 포함, 합 20 이하)
+        currentA = randInt(3, 9);
+        currentB = randInt(3, 9);
+      } else {
+        // 3단계: 두 자리 수 + 한 자리 수
+        currentA = randInt(10, 25);
+        currentB = randInt(2, 9);
+      }
+
+      correctAnswer = currentA + currentB;
+      numAEl.textContent = currentA;
+      numBEl.textContent = currentB;
+
+      const emoji = EMOJIS[randInt(0, EMOJIS.length - 1)];
+      renderVisualGroup(leftVisualEl, currentA, emoji);
+      renderVisualGroup(rightVisualEl, currentB, emoji);
+
+      renderChoices();
+    }
+
+    // 4지선다 보기 생성
+    function renderChoices() {
+      choicesGridEl.innerHTML = '';
+      const options = new Set([correctAnswer]);
+
+      while (options.size < 4) {
+        const offset = randInt(-3, 4);
+        const candidate = correctAnswer + offset;
+        if (candidate > 0 && candidate !== correctAnswer) {
+          options.add(candidate);
+        }
+      }
+
+      Array.from(options)
+        .sort(() => Math.random() - 0.5)
+        .forEach((val) => {
+          const btn = document.createElement('button');
+          btn.className = 'choice-btn';
+          btn.textContent = val;
+          btn.addEventListener('click', () => checkAnswer(val, btn));
+          choicesGridEl.appendChild(btn);
+        });
+    }
+
+    // 정답 확인
+    function checkAnswer(selectedValue, buttonEl = null) {
+      if (isLocked) return;
+
+      if (Number(selectedValue) === correctAnswer) {
+        isLocked = true;
+        answerSlotEl.textContent = correctAnswer;
+        if (buttonEl) buttonEl.classList.add('correct');
+        playTone('correct');
+
+        const praises = [
+          '정답이에요! 끝까지 잘 세어 보았네요!',
+          '우와, 정확해요! 계산 실력이 쑥쑥 자라요!',
+          '딩동댕! 스스로 힘을 내서 맞혔어요!'
+        ];
+        feedbackTextEl.textContent = praises[randInt(0, praises.length - 1)];
+        feedbackTextEl.style.color = '#1B998B';
+
+        stars += 1;
+        starCountEl.textContent = stars;
+        localStorage.setItem('addition_stars', stars);
+
+        setTimeout(() => {
+          if (stars > 0 && stars % 10 === 0) {
+            modalMessage.textContent = `벌써 별을 ${stars}개나 모았어요! 정말 대단해요!`;
+            celebrationModal.style.display = 'flex';
+          } else {
+            generateQuestion();
+          }
+        }, 900);
+      } else {
+        playTone('wrong');
+        if (buttonEl) buttonEl.classList.add('wrong');
+        feedbackTextEl.textContent = '아하! 그림을 한 번 더 천천히 세어 볼까요?';
+        feedbackTextEl.style.color = '#E07A00';
+        typedInput = '';
+        if (isKeypadMode) answerSlotEl.textContent = '?';
+      }
+    }
+
+    // 단계 선택 이벤트
+    document.querySelectorAll('.level-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        level = Number(btn.dataset.level);
+        generateQuestion();
+      });
+    });
+
+    // 보기 모드 / 키패드 모드 전환
+    modeToggleBtn.addEventListener('click', () => {
+      isKeypadMode = !isKeypadMode;
+      modeToggleBtn.textContent = isKeypadMode ? '키패드 모드' : '보기 모드';
+      choicesGridEl.style.display = isKeypadMode ? 'none' : 'grid';
+      keypadGridEl.style.display = isKeypadMode ? 'grid' : 'none';
+      typedInput = '';
+      answerSlotEl.textContent = '?';
+    });
+
+    // 소리 켜기/끄기
+    soundToggleBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggleBtn.textContent = soundEnabled ? '🔊' : '🔇';
+    });
+
+    // 숫자 키패드 입력 처리
+    document.querySelectorAll('.key-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (isLocked) return;
+        const key = btn.dataset.key;
+        if (key === 'clear') {
+          typedInput = '';
+          answerSlotEl.textContent = '?';
+        } else if (key === 'submit') {
+          if (typedInput !== '') checkAnswer(Number(typedInput));
+        } else {
+          if (typedInput.length < 3) {
+            typedInput += key;
+            answerSlotEl.textContent = typedInput;
+          }
+        }
+      });
+    });
+
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      celebrationModal.style.display = 'none';
+      generateQuestion();
+    });
+
+    // 초기 실행
+    generateQuestion();
+
+    // 서비스 워커 등록 (updateViaCache: 'none'으로 코드 업데이트 지연 방지)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('./sw.js', { updateViaCache: 'none' })
+          .then((reg) => {
+            reg.update();
+          })
+          .catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
